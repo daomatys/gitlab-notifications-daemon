@@ -9,7 +9,8 @@ use Ridouchire\GitlabNotificationsDaemon\Pipelines\Pipeline;
 class PipelineRepository
 {
     public function __construct(
-        private Client $gitlab_client
+        private Client $gitlab_client,
+        private string $project_id
     ) {
     }
 
@@ -18,7 +19,7 @@ class PipelineRepository
         $query = http_build_query($filters);
 
         /** @var Response */
-        $res = $this->gitlab_client->request('GET', '/api/v4/projects/9/pipelines?' . $query);
+        $res = $this->gitlab_client->request('GET', '/api/v4/projects/' . $this->project_id . '/pipelines?' . $query);
 
         if ($res->getStatusCode() !== 200) {
             throw new \RuntimeException();

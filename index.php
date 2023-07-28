@@ -11,6 +11,7 @@ use Ridouchire\GitlabNotificationsDaemon\Services\Templater;
 
 $gitlab_token = $_ENV['GITLAB_TOKEN'];
 $gitlab_url   = $_ENV['GITLAB_URL'];
+$project_id   = $_ENV['GITLAB_PROJECT_ID'];
 $tlgram_token = $_ENV['TELEGRAM_BOT_TOKEN'];
 $user_chat_id = $_ENV['TELEGRAM_USER_CHAT_ID'];
 
@@ -24,8 +25,8 @@ $http_client = new Client([
     'allow_redirects' => true
 ]);
 
-$issue_repo = new IssueRepository($http_client);
-$pipeline_repo = new PipelineRepository($http_client);
+$issue_repo = new IssueRepository($http_client, $project_id);
+$pipeline_repo = new PipelineRepository($http_client, $project_id);
 
 $templater = Templater::getTemplater();
 
@@ -78,7 +79,7 @@ Loop::addPeriodicTimer(60, function () use (&$timestamp, $issue_repo, $pipeline_
     $backend_label_issues = $issue_repo->findMany([
         'state'         => 'opened',
         'labels'        => 'require back-end',
-        'per_page'      => 20,
+        'per_page'      => 10,
         'updated_after' => $timestamp_str
     ]);
 
