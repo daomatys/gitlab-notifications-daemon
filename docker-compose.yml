@@ -1,0 +1,19 @@
+version: '3.9'
+
+services:
+  gitlab-notifications-daemon:
+    build:
+      dockerfile: Dockerfile
+      context: .
+      args:        
+        - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+        - TELEGRAM_USER_CHAT_ID=${TELEGRAM_USER_CHAT_ID}
+        - GITLAB_TOKET=${GITLAB_TOKEN}
+    container_name: ridouchire-gitlab-notifications-daemon
+    restart: always
+    env_file:
+      - '.env'
+    environment:
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_USER_CHAT_ID=${TELEGRAM_USER_CHAT_ID}
+      - GITLAB_TOKET=${GITLAB_TOKEN}

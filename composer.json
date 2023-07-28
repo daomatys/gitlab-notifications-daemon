@@ -1,0 +1,19 @@
+{
+    "name": "ridouchire/gitlab-notification-daemon",
+    "autoload": {
+        "psr-4": {
+            "Ridouchire\\GitlabNotificationsDaemon\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ridouchire",
+            "email": "ridouchire@gmail.com"
+        }
+    ],
+    "require": {
+        "react/event-loop": "^1.4",
+        "guzzlehttp/guzzle": "^7.7",
+        "twig/twig": "^3.7"
+    }
+}
