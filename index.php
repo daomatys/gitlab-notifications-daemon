@@ -11,7 +11,7 @@ use Ridouchire\GitlabNotificationsDaemon\Services\Templater;
 
 $gitlab_token    = $_ENV['GITLAB_TOKEN'];
 $gitlab_url      = $_ENV['GITLAB_URL'];
-$gitlab_username = $_ENV['GITLAB_USERNAME']
+$gitlab_username = $_ENV['GITLAB_USERNAME'];
 $project_id      = $_ENV['GITLAB_PROJECT_ID'];
 $tlgram_token    = $_ENV['TELEGRAM_BOT_TOKEN'];
 $user_chat_id    = $_ENV['TELEGRAM_USER_CHAT_ID'];
