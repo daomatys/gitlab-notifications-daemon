@@ -9,11 +9,12 @@ use Ridouchire\GitlabNotificationsDaemon\Pipelines\PipelineRepository;
 use Ridouchire\GitlabNotificationsDaemon\Services\TelegramSender;
 use Ridouchire\GitlabNotificationsDaemon\Services\Templater;
 
-$gitlab_token = $_ENV['GITLAB_TOKEN'];
-$gitlab_url   = $_ENV['GITLAB_URL'];
-$project_id   = $_ENV['GITLAB_PROJECT_ID'];
-$tlgram_token = $_ENV['TELEGRAM_BOT_TOKEN'];
-$user_chat_id = $_ENV['TELEGRAM_USER_CHAT_ID'];
+$gitlab_token    = $_ENV['GITLAB_TOKEN'];
+$gitlab_url      = $_ENV['GITLAB_URL'];
+$gitlab_username = $_ENV['GITLAB_USERNAME']
+$project_id      = $_ENV['GITLAB_PROJECT_ID'];
+$tlgram_token    = $_ENV['TELEGRAM_BOT_TOKEN'];
+$user_chat_id    = $_ENV['TELEGRAM_USER_CHAT_ID'];
 
 $telegram_sender = new TelegramSender($tlgram_token, $user_chat_id);
 
@@ -51,7 +52,7 @@ Loop::addPeriodicTimer(60, function () use (&$timestamp, $issue_repo, $pipeline_
     $assignee_issues = $issue_repo->findMany([
         'state'             => 'opened',
         'assignee_username' => [
-            'ridouchire'
+            $gitlab_username
         ],
         'per_page'          => 10,
         'updated_after'     => $timestamp_str
@@ -64,7 +65,7 @@ Loop::addPeriodicTimer(60, function () use (&$timestamp, $issue_repo, $pipeline_
     }
 
     $pipelines = $pipeline_repo->findMany([
-        'username'      => 'ridouchire',
+        'username'      => $gitlab_username,
         'status'        => 'failed',
         'per_page'      => 10,
         'updated_after' => $timestamp_str
