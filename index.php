@@ -33,7 +33,7 @@ $templater = Templater::getTemplater();
 
 $timestamp = time();
 
-Loop::addPeriodicTimer(60, function () use (&$timestamp, $issue_repo, $pipeline_repo, $templater, $telegram_sender) {
+Loop::addPeriodicTimer(60, function () use (&$timestamp, $issue_repo, $pipeline_repo, $templater, $telegram_sender, $gitlab_username) {
 
     $timestamp_str = date('Y-m-d H:i:s', $timestamp);
 
