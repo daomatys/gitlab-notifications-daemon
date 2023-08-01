@@ -43,7 +43,7 @@ Loop::addPeriodicTimer(30, function () use (&$timestamp, $issue_repo, $pipeline_
     $new_issues = $issue_repo->findMany([
         'state'         > 'opened',
         'per_page'      => 10,
-        'updated_after' => $timestamp_str
+        'created_after' => $timestamp_str
     ]);
 
     foreach ($new_issues as $issue) {
