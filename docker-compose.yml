@@ -10,8 +10,8 @@ services:
         - TELEGRAM_USER_CHAT_ID=${TELEGRAM_USER_CHAT_ID}
         - GITLAB_TOKET=${GITLAB_TOKEN}
         - GITLAB_PROJECT_ID=${GITLAB_PROJECT_ID}
+        - GITLAB_USERNAME={$GITLAB_USERNAME}
     container_name: ridouchire-gitlab-notifications-daemon
-    restart: always
     env_file:
       - '.env'
     environment:
@@ -19,3 +19,4 @@ services:
       - TELEGRAM_USER_CHAT_ID=${TELEGRAM_USER_CHAT_ID}
       - GITLAB_TOKET=${GITLAB_TOKEN}
       - GITLAB_PROJECT_ID=${GITLAB_PROJECT_ID}
+      - GITLAB_USERNAME=${GITLAB_USERNAME}

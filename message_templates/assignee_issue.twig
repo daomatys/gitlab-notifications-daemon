@@ -1,0 +1,30 @@
+Назначена задача
+{{ title }}
+
+{{ description }}
+
+Автор: {{ author }}
+Исполнитель: {{ assignee }}
+Метки: {{ labels }}
+
+Создана: {{ created_at }}
+Обновлена: {{ updated_at }}
+
+{% if not milestone %}
+Релиз: неизвестно
+{% else %}
+Релиз: {{ milestone.title }}
+{% endif %}
+
+{% if not time_stats.human_time_estimate %}
+Оценка: нет
+{% else %}
+Оценка: {{ time_stats.human_time_estimate }}
+{% endif %}
+{% if not time_stats.human_total_time_spent %}
+Затрачено: неизвестно
+{% else %}
+Затрачено: {{ time_stats.human_total_time_spent }}
+{% endif %}
+
+🌏 {{ web_url }} 🌏

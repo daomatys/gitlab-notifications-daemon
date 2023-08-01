@@ -40,7 +40,11 @@ class IssueRepository
                 $issue_data['state'],
                 $issue_data['labels'],
                 $issue_data['user_notes_count'],
-                $issue_data['web_url']
+                $issue_data['web_url'],
+                $issue_data['created_at'],
+                $issue_data['updated_at'],
+                $issue_data['milestone'],
+                $issue_data['time_stats']
             );
         }
 

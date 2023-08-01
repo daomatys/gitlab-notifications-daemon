@@ -34,7 +34,11 @@ class PipelineRepository
             $pipelines[] = new Pipeline(
                 $pipeline_data['id'],
                 $pipeline_data['status'],
-                $pipeline_data['web_url']
+                $pipeline_data['web_url'],
+                $pipeline_data['created_at'],
+                $pipeline_data['updated_at'],
+                $pipeline_data['ref'],
+                $pipeline_data['sha']
             );
         }
 

@@ -7,7 +7,8 @@ use GuzzleHttp\Client;
 use Ridouchire\GitlabNotificationsDaemon\Issues\IssueRepository;
 use Ridouchire\GitlabNotificationsDaemon\Pipelines\PipelineRepository;
 use Ridouchire\GitlabNotificationsDaemon\Services\TelegramSender;
-use Ridouchire\GitlabNotificationsDaemon\Services\Templater;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 $gitlab_token    = $_ENV['GITLAB_TOKEN'];
 $gitlab_url      = $_ENV['GITLAB_URL'];
@@ -29,22 +30,23 @@ $http_client = new Client([
 $issue_repo = new IssueRepository($http_client, $project_id);
 $pipeline_repo = new PipelineRepository($http_client, $project_id);
 
-$templater = Templater::getTemplater();
+$templater = new Environment(new FilesystemLoader([
+    __DIR__ . '/user_message_templates',
+    __DIR__ . '/message_templates'
+]));
 
 $timestamp = time();
 
-Loop::addPeriodicTimer(60, function () use (&$timestamp, $issue_repo, $pipeline_repo, $templater, $telegram_sender, $gitlab_username) {
-
+Loop::addPeriodicTimer(1, function () use (&$timestamp, $issue_repo, $pipeline_repo, $templater, $telegram_sender, $gitlab_username) {
     $timestamp_str = date('Y-m-d H:i:s', $timestamp);
 
     $new_issues = $issue_repo->findMany([
         'state'         > 'opened',
-        'created_after' => $timestamp_str,
-        'per_page'      => 10,
+        'per_page'      => 1,
     ]);
 
     foreach ($new_issues as $issue) {
-        $text = $templater->render('new_issue', $issue->jsonSerialize());
+        $text = $templater->render('new_issue.twig', $issue->jsonSerialize());
 
         $telegram_sender->send($text);
     }
@@ -54,12 +56,11 @@ Loop::addPeriodicTimer(60, function () use (&$timestamp, $issue_repo, $pipeline_
         'assignee_username' => [
             $gitlab_username
         ],
-        'per_page'          => 10,
-        'updated_after'     => $timestamp_str
+        'per_page'          => 3
     ]);
 
     foreach ($assignee_issues as $issue) {
-        $text = $templater->render('assignee_issue', $issue->jsonSerialize());
+        $text = $templater->render('assignee_issue.twig', $issue->jsonSerialize());
 
         $telegram_sender->send($text);
     }
@@ -67,31 +68,20 @@ Loop::addPeriodicTimer(60, function () use (&$timestamp, $issue_repo, $pipeline_
     $pipelines = $pipeline_repo->findMany([
         'username'      => $gitlab_username,
         'status'        => 'failed',
-        'per_page'      => 10,
-        'updated_after' => $timestamp_str
+        'per_page'      => 1
     ]);
 
     foreach ($pipelines as $pipeline) {
-        $text = $templater->render('pipeline_failed', $pipeline->jsonSerialize());
-
-        $telegram_sender->send($text);
-    }
-
-    $backend_label_issues = $issue_repo->findMany([
-        'state'         => 'opened',
-        'labels'        => 'require back-end',
-        'per_page'      => 10,
-        'updated_after' => $timestamp_str
-    ]);
-
-    foreach ($backend_label_issues as $issue) {
-        $text = $templater->render('backend_label_issue', $issue->jsonSerialize());
+        $text = $templater->render('pipeline_failed.twig', $pipeline->jsonSerialize());
 
         $telegram_sender->send($text);
     }
 
     # TODO: получать новые комментарии из задач, в которых я являюсь участником
     # TODO: получать новые MR, созданные мною, и отслеживать их состояние
+    # TODO: поиск задач по тегам
 
     $timestamp = time();
+
+    exit(0);
 });

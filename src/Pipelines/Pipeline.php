@@ -7,7 +7,11 @@ class Pipeline implements \JsonSerializable
     public function __construct(
         private int $id,
         private string $status,
-        private string $web_url
+        private string $web_url,
+        private string $created_at,
+        private string $updated_at,
+        private int $ref,
+        private string $sha
     ) {
     }
 

@@ -13,7 +13,11 @@ class Issue implements \JsonSerializable
         private string $state,
         private array $labels,
         private int $comment_count,
-        private string $web_url
+        private string $web_url,
+        private string $created_at,
+        private string $updated_at,
+        private ?array $milestone,
+        private array $time_stats
     ) {
     }
 
