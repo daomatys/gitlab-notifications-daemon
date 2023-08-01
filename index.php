@@ -37,12 +37,13 @@ $templater = new Environment(new FilesystemLoader([
 
 $timestamp = time();
 
-Loop::addPeriodicTimer(1, function () use (&$timestamp, $issue_repo, $pipeline_repo, $templater, $telegram_sender, $gitlab_username) {
+Loop::addPeriodicTimer(30, function () use (&$timestamp, $issue_repo, $pipeline_repo, $templater, $telegram_sender, $gitlab_username) {
     $timestamp_str = date('Y-m-d H:i:s', $timestamp);
 
     $new_issues = $issue_repo->findMany([
         'state'         > 'opened',
-        'per_page'      => 1,
+        'per_page'      => 10,
+        'updated_after' => $timestamp_str
     ]);
 
     foreach ($new_issues as $issue) {
@@ -56,7 +57,8 @@ Loop::addPeriodicTimer(1, function () use (&$timestamp, $issue_repo, $pipeline_r
         'assignee_username' => [
             $gitlab_username
         ],
-        'per_page'          => 3
+        'per_page'          => 10,
+        'updated_after'     => $timestamp_str
     ]);
 
     foreach ($assignee_issues as $issue) {
@@ -68,7 +70,8 @@ Loop::addPeriodicTimer(1, function () use (&$timestamp, $issue_repo, $pipeline_r
     $pipelines = $pipeline_repo->findMany([
         'username'      => $gitlab_username,
         'status'        => 'failed',
-        'per_page'      => 1
+        'per_page'      => 10,
+        'updated_after' => $timestamp_str
     ]);
 
     foreach ($pipelines as $pipeline) {
@@ -82,6 +85,4 @@ Loop::addPeriodicTimer(1, function () use (&$timestamp, $issue_repo, $pipeline_r
     # TODO: поиск задач по тегам
 
     $timestamp = time();
-
-    exit(0);
 });
